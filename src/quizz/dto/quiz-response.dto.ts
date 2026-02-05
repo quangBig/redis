@@ -11,4 +11,5 @@ export class QuizResponseDto {
   participants: number;
   timeRemaining: number;
   isActive: boolean;
+  totalQuestions?: number;
 }

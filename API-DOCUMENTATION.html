@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .endpoint-card { transition: all 0.3s ease; }
+        .endpoint-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .method-get { background: linear-gradient(135deg, #10b981, #059669); }
+        .method-post { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .method-put { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .method-delete { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .code-block { background: #1e293b; color: #e2e8f0; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto p-4 max-w-6xl">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h1 class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <i class="fas fa-server"></i> Quiz Backend API Documentation
+            </h1>
+            <p class="text-center text-gray-600">NestJS + Redis + MongoDB Quiz System</p>
+            <div class="mt-4 flex justify-center gap-4">
+                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                    <i class="fas fa-database"></i> MongoDB
+                </span>
+                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                    <i class="fas fa-bolt"></i> Redis
+                </span>
+                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                    <i class="fas fa-code"></i> NestJS
+                </span>
+            </div>
+        </div>
+
+        <!-- Base URL -->
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-3">
+                <i class="fas fa-link"></i> Base URL
+            </h2>
+            <code class="bg-white/20 backdrop-blur px-4 py-2 rounded-lg text-lg font-mono">
+                http://localhost:3000
+            </code>
+        </div>
+
+        <!-- Quiz Management Endpoints -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6 text-blue-600">
+                <i class="fas fa-cogs"></i> Quiz Management
+            </h2>
+
+            <!-- Create Quiz -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-post text-white px-3 py-1 rounded-lg font-bold mr-3">POST</span>
+                    <code class="text-lg font-mono">/quiz/create</code>
+                </div>
+                <p class="text-gray-700 mb-4">Tạo quiz mới và lưu vào MongoDB + Redis</p>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Request Body:</h4>
+                    <pre class="code-block p-4 rounded-lg overflow-x-auto"><code>{
+  "title": "Quiz Lịch Sử Việt Nam",
+  "questions": [
+    {
+      "question": "Vua Lý Thái Tổ tên thật là gì?",
+      "options": ["Lý Công Uẩn", "Lý Công Uất", "Lý Công Mẫn", "Lý Công Hiền"],
+      "correctAnswer": 0,
+      "timeLimit": 30
+    }
+  ]
+}</code></pre>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-2">Response:</h4>
+                    <pre class="code-block p-4 rounded-lg"><code>{
+  "quizId": "quiz_1770287434870_64cgv7qam"
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Get All Quizzes -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-get text-white px-3 py-1 rounded-lg font-bold mr-3">GET</span>
+                    <code class="text-lg font-mono">/quiz/list</code>
+                </div>
+                <p class="text-gray-700 mb-4">Lấy tất cả quizzes từ MongoDB</p>
+                
+                <div>
+                    <h4 class="font-semibold mb-2">Response:</h4>
+                    <pre class="code-block p-4 rounded-lg overflow-x-auto"><code>[
+  {
+    "_id": "65a1b2c3d4e5f6a7b8c9d0e",
+    "quizId": "quiz_1770287434870_64cgv7qam",
+    "title": "Quiz Lịch Sử Việt Nam",
+    "questions": [...],
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "isActive": false
+  }
+]</code></pre>
+                </div>
+            </div>
+
+            <!-- Find Quiz -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-get text-white px-3 py-1 rounded-lg font-bold mr-3">GET</span>
+                    <code class="text-lg font-mono">/quiz/find?title=...</code>
+                </div>
+                <p class="text-gray-700 mb-4">Tìm quiz theo tiêu đề</p>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Example:</h4>
+                    <code class="bg-gray-100 px-3 py-2 rounded">GET /quiz/find?title=Quiz%20Lịch%20Sử</code>
+                </div>
+            </div>
+
+            <!-- Get Quiz by ID -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-get text-white px-3 py-1 rounded-lg font-bold mr-3">GET</span>
+                    <code class="text-lg font-mono">/quiz/{quizId}</code>
+                </div>
+                <p class="text-gray-700 mb-4">Lấy thông tin quiz từ Redis (real-time data)</p>
+            </div>
+        </div>
+
+        <!-- Quiz Gameplay Endpoints -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6 text-green-600">
+                <i class="fas fa-gamepad"></i> Quiz Gameplay
+            </h2>
+
+            <!-- Start Quiz -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-post text-white px-3 py-1 rounded-lg font-bold mr-3">POST</span>
+                    <code class="text-lg font-mono">/quiz/{quizId}/start</code>
+                </div>
+                <p class="text-gray-700 mb-4">Bắt đầu quiz, set isActive = true</p>
+            </div>
+
+            <!-- Join Quiz -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-post text-white px-3 py-1 rounded-lg font-bold mr-3">POST</span>
+                    <code class="text-lg font-mono">/quiz/join</code>
+                </div>
+                <p class="text-gray-700 mb-4">Tham gia quiz (lưu vào Redis)</p>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Request Body:</h4>
+                    <pre class="code-block p-4 rounded-lg"><code>{
+  "quizId": "quiz_1770287434870_64cgv7qam",
+  "userName": "NguyenVanA"
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Get Question -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-get text-white px-3 py-1 rounded-lg font-bold mr-3">GET</span>
+                    <code class="text-lg font-mono">/quiz/{quizId}/question/{index}</code>
+                </div>
+                <p class="text-gray-700 mb-4">Lấy câu hỏi theo index từ Redis</p>
+            </div>
+
+            <!-- Submit Answer -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-post text-white px-3 py-1 rounded-lg font-bold mr-3">POST</span>
+                    <code class="text-lg font-mono">/quiz/submit-answer</code>
+                </div>
+                <p class="text-gray-700 mb-4">Nộp câu trả lời (lưu vào Redis + cập nhật leaderboard)</p>
+                
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Request Body:</h4>
+                    <pre class="code-block p-4 rounded-lg"><code>{
+  "quizId": "quiz_1770287434870_64cgv7qam",
+  "questionIndex": 0,
+  "answer": 0,
+  "userName": "NguyenVanA"
+}</code></pre>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-2">Response:</h4>
+                    <pre class="code-block p-4 rounded-lg"><code>{
+  "isCorrect": true
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-get text-white px-3 py-1 rounded-lg font-bold mr-3">GET</span>
+                    <code class="text-lg font-mono">/quiz/{quizId}/leaderboard</code>
+                </div>
+                <p class="text-gray-700 mb-4">Lấy bảng xếp hạng từ Redis (sorted set)</p>
+                
+                <div>
+                    <h4 class="font-semibold mb-2">Response:</h4>
+                    <pre class="code-block p-4 rounded-lg overflow-x-auto"><code>{
+  "quizId": "quiz_1770287434870_64cgv7qam",
+  "rankings": [
+    {
+      "rank": 1,
+      "userName": "NguyenVanA",
+      "score": 20
+    },
+    {
+      "rank": 2,
+      "userName": "TranThiB",
+      "score": 10
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- End Quiz -->
+            <div class="endpoint-card border-2 border-gray-200 rounded-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="method-post text-white px-3 py-1 rounded-lg font-bold mr-3">POST</span>
+                    <code class="text-lg font-mono">/quiz/{quizId}/end</code>
+                </div>
+                <p class="text-gray-700 mb-4">Kết thúc quiz, set isActive = false</p>
+            </div>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6 text-purple-600">
+                <i class="fas fa-database"></i> Database Schema
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- MongoDB Schema -->
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-green-600">
+                        <i class="fas fa-hard-drive"></i> MongoDB (Persistent Storage)
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Quiz Collection:</h4>
+                        <pre class="code-block p-3 rounded text-sm overflow-x-auto"><code>{
+  "_id": ObjectId,
+  "quizId": "string",
+  "title": "string", 
+  "questions": [
+    {
+      "question": "string",
+      "options": ["string"],
+      "correctAnswer": "number",
+      "timeLimit": "number"
+    }
+  ],
+  "duration": "number",
+  "createdAt": "Date",
+  "isActive": "boolean",
+  "startedAt": "Date",
+  "endedAt": "Date"
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Redis Schema -->
+                <div>
+                    <h3 class="font-bold text-lg mb-3 text-red-600">
+                        <i class="fas fa-memory"></i> Redis (Real-time Data)
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Keys Structure:</h4>
+                        <pre class="code-block p-3 rounded text-sm overflow-x-auto"><code># Quiz Info
+quiz:{quizId} -> Hash {title, createdAt}
+
+# Questions  
+quiz:questions:{quizId} -> List [question1, question2, ...]
+
+# Participants
+quiz:participants:{quizId} -> Set [user1, user2, ...]
+
+# Leaderboard
+quiz:leaderboard:{quizId} -> Sorted Set {score, userName}
+
+# User Answers
+quiz:answers:{quizId}:{userName} -> List [answer1, answer2, ...]
+
+# Quiz Status
+quiz:status:{quizId} -> String "1" or "0"
+
+# Start Time
+quiz:starttime:{quizId} -> String timestamp</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Guide -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-6 text-orange-600">
+                <i class="fas fa-flask"></i> Testing Guide
+            </h2>
+
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold mr-3">1</span>
+                    <div>
+                        <h4 class="font-semibold">Start Backend</h4>
+                        <code class="bg-gray-100 px-3 py-2 rounded text-sm">npm run start:dev</code>
+                    </div>
+                </div>
+
+                <div class="flex items-start">
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold mr-3">2</span>
+                    <div>
+                        <h4 class="font-semibold">Test Create Quiz</h4>
+                        <p class="text-gray-600">POST /quiz/create → Check MongoDB Compass</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start">
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold mr-3">3</span>
+                    <div>
+                        <h4 class="font-semibold">Test Gameplay</h4>
+                        <p class="text-gray-600">Join → Get Questions → Submit Answers → Check Leaderboard</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start">
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-bold mr-3">4</span>
+                    <div>
+                        <h4 class="font-semibold">Verify Data</h4>
+                        <p class="text-gray-600">MongoDB: quiz_db.quizzes | Redis: Check keys with Redis CLI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click to copy functionality
+            document.querySelectorAll('code').forEach(code => {
+                code.style.cursor = 'pointer';
+                code.title = 'Click to copy';
+                code.addEventListener('click', function() {
+                    navigator.clipboard.writeText(this.textContent);
+                    const original = this.textContent;
+                    this.textContent = 'Copied!';
+                    setTimeout(() => {
+                        this.textContent = original;
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

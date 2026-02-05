@@ -12,7 +12,7 @@ import { QuizzModule } from './quizz/quizz.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URL as string),
+    MongooseModule.forRoot('mongodb://localhost:27017/quiz_db'),
     RedisModule, 
     QuizzModule
   ],
